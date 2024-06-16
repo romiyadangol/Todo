@@ -1,8 +1,12 @@
 import { IoMdAdd } from "react-icons/io";
 import { MdEdit, MdSave, MdDelete } from "react-icons/md";
 import { useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function TodoApp() {
+  const notify = (message) => toast(message);
+
   const [todos, setTodos] = useState([
     { text: "Don't worry", completed: true },
     { text: "Be happy", completed: false },
@@ -17,6 +21,7 @@ function TodoApp() {
     if (newTodo.trim()) {
       setTodos([...todos, { text: newTodo, completed: false }]);
       setNewTodo("");
+      notify("Todo added!");
     }
   };
 
@@ -25,16 +30,21 @@ function TodoApp() {
       i === index ? { ...todo, completed: !todo.completed } : todo
     );
     setTodos(updatedTodos);
+    notify(
+      `Todo ${updatedTodos[index].completed ? "completed" : "not completed"}`
+    );
   };
 
   const deleteTodo = (index) => {
     const updatedTodos = todos.filter((_, i) => i !== index);
     setTodos(updatedTodos);
+    notify("Todo deleted!");
   };
 
   const startEditing = (index) => {
     setEditingIndex(index);
     setEditingText(todos[index].text);
+    notify("Editing started!");
   };
 
   const saveEditing = (index) => {
@@ -43,6 +53,7 @@ function TodoApp() {
     );
     setTodos(updatedTodos);
     setEditingIndex(null);
+    notify("Todo saved!");
   };
 
   const filteredTodos = todos.filter((todo) => {
@@ -73,7 +84,10 @@ function TodoApp() {
       </div>
       <div className="flex flex-row gap-4 justify-center mt-1">
         <button
-          onClick={() => setFilter("active")}
+          onClick={() => {
+            setFilter("active");
+            notify("Active Todos");
+          }}
           className={`text-xl border rounded-full px-6 py-2 transition-all duration-300 ${
             filter === "active"
               ? "bg-pink-500 text-white"
@@ -83,7 +97,10 @@ function TodoApp() {
           Active
         </button>
         <button
-          onClick={() => setFilter("completed")}
+          onClick={() => {
+            setFilter("completed");
+            notify("Completed Todos");
+          }}
           className={`text-xl border rounded-full px-6 py-2 transition-all duration-300 ${
             filter === "completed"
               ? "bg-blue-500 text-white"
@@ -93,7 +110,10 @@ function TodoApp() {
           Completed
         </button>
         <button
-          onClick={() => setFilter("all")}
+          onClick={() => {
+            setFilter("all");
+            notify("All todos");
+          }}
           className={`text-xl border rounded-full px-6 py-2 transition-all duration-300 ${
             filter === "all"
               ? "bg-green-500 text-white"
@@ -159,6 +179,7 @@ function TodoApp() {
           </li>
         ))}
       </ul>
+      <ToastContainer />
     </div>
   );
 }
